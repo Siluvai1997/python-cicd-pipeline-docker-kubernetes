@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    environment {
+        ARTIFACTORY_REGISTRY = 'jfrog.yourdomain.com/docker-local'
+        DOCKER_CREDENTIALS_ID = 'jfrog-docker-credentials'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                dir('app') {
+                    sh 'pip install -r requirements.txt'
+                    sh 'pytest ../tests'
+                }
+            }
+        }
+
+        stage('Code Quality Check') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'sonar-scanner'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${env.ARTIFACTORY_REGISTRY}/hello-world-py:${BUILD_NUMBER}", "docker/")
+                }
+            }
+        }
+
+        stage('Push Docker Image to Artifactory') {
+            steps {
+                script {
+                    docker.withRegistry("https://${env.ARTIFACTORY_REGISTRY}", env.DOCKER_CREDENTIALS_ID) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
