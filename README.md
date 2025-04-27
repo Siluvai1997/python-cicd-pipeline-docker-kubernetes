@@ -24,8 +24,9 @@ python-cicd-pipeline-docker-kubernetes/
     - Push the Docker image to JFrog Artifactory
 
 2. **CD Pipeline (Jenkins)**
-    - Pull the latest Docker image
+    - Pull the latest Docker image from JFrog Artifactory
     - Deploy the application to a Kubernetes cluster using deployment, service, and ingress manifests
+    - Access Python App via Ingress URL
 
 ### Tech Stack
 
@@ -45,10 +46,6 @@ python-cicd-pipeline-docker-kubernetes/
   - SonarQube integration
   - Kubeconfig credentials to deploy to Kubernetes
 - Access to JFrog Artifactory
-
-### Deployment Diagram
-
-![CI/CD Flow](docs/cicd-flowchart.png)
 
 ### Access Application
 
