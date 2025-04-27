@@ -60,7 +60,7 @@ http://hello-world.yourdomain.com
 
 Ensure DNS is configured to route traffic to the Kubernetes ingress controller.
 
-#### How to Run Locally
+### How to Run Locally
 
 ```bash
 cd app/
